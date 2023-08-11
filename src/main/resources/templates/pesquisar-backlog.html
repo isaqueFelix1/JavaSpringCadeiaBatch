@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="icon" href="static/img/ibm.png">
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link href="static/css/offcanvas.css" rel="stylesheet">
+    <link href="static/css/form-custom.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">        
+        google.charts.load('current', { 'packages': ['corechart'] });
+    </script>
+    
+    <title>Work Hours - Extração</title>
+</head>
+
+<body class="bg-light">
+
+    <div class="nav-scroller bg-white box-shadow">
+        <nav class="nav nav-underline">
+            <a class="nav-link" href="/home">Página Inicial</a>                       
+            <a class="nav-link" href="/hours">Work Hours</a>            
+            <a class="nav-link" href="/logout">Logout</a>
+        </nav>
+    </div>
+
+    <main role="main" class="container">
+        <div class="d-flex align-items-center p-3 my-3 text-50 bg-purple rounded box-shadow">
+            <img class="mr-3" src="static/img/ibm1.png" alt="ibm" width="100" height="80">
+            <div class="lh-100">
+                <h6 class="mb-0 text-black lh-100">IBM Brasil</h6>
+            </div>
+        </div>
+
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+            <h6 class="border-bottom border-gray pb-2 mb-0">Geração de backlog diário</h6>
+            <br/>
+
+            <p>Segue abaixo os gráficos do backlog diário para visualização</p>
+
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" id="btnPeriodo">Período</a>
+                </li>                
+            </ul>
+			 
+            <div class="media text-muted pt-6 ">
+
+                <!-- PESQUISA POR PERIODO -->
+                <form class="form-signin" id="periodo">
+
+                    <div class="form-inline row">
+                        <div class="col-md-8">                           
+                            <label for="data-inicial">Data da Extração</label>
+                            <div class="input-group">
+                                <input disabled="true" type="text" class="form-control" id="data-inicial" />
+                            </div>
+                        </div>
+                    </div>
+                
+                    <br/>                                       
+                    <button class="btn btn-primary" type="submit" id="gera-backlog">Gerar backlog</button>
+                    <br/><br/>
+                    <div class="alert alert-success col-md-8" hidden="true" role="alert">
+					  Backlog gerado!					  
+					</div>  																					
+                </form>               
+        	</div>
+        	
+        	<br/><br/>
+        	        	
+			<div id="div_spinner" class="d-flex justify-content-center">
+			  <div id="spinner" class="spinner-border text-primary" style="width: 6rem; height: 6rem;" role="status">
+			    <span class="sr-only">Loading...</span>
+			  </div>
+			</div>
+			
+        	<br/><br/>
+            <div align="center" id="line_top_x"></div>
+            <br/><br/>
+            
+            <br/><br/>
+            <div align="center" id="columnchart_values"></div>
+            <br/><br/>            
+            
+        </div>
+    </main>
+
+    <script type="text/javascript" src="static/js/jquery-3.3.1.js"></script>
+    <script src="static/js/popper.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/holder.min.js"></script>
+    <script src="static/js/offcanvas.js"></script>
+    <script src="static/js/jquery-ui.js"></script>    
+    <script src="static/js/backlog.js"></script>        
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+html,
+body {
+  height: 100%;
+}
+
+.form-signin {
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.table-custom {
+  width: 100%;
+  max-width: 900px;
+  padding: 15px;
+  margin: 0 auto;
+}

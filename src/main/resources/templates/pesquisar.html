@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="icon" href="static/img/ibm.png">
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link href="static/css/offcanvas.css" rel="stylesheet">
+    <link href="static/css/form-custom.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/jquery-ui.css">
+
+    <title>Cadeia Batch - Pesquisar</title>
+</head>
+
+<body class="bg-light">
+
+    <div class="nav-scroller bg-white box-shadow">
+        <nav class="nav nav-underline">
+            <a class="nav-link" href="/home">Página Inicial</a>
+            <a class="nav-link" href="/incluir">Incluir</a>
+            <a class="nav-link active" href="/pesquisar">Pesquisar</a>
+            <a class="nav-link" href="/relatoriomanual">Relatório Manual</a>
+            <a class="nav-link" href="/logout">Logout</a>
+        </nav>
+    </div>
+
+    <main role="main" class="container">
+        <div class="d-flex align-items-center p-3 my-3 text-50 bg-purple rounded box-shadow">
+            <img class="mr-3" src="static/img/ibm1.png" alt="ibm" width="100" height="80">
+            <div class="lh-100">
+                <h6 class="mb-0 text-black lh-100">IBM Brasil</h6>
+            </div>
+        </div>
+
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+            <h6 class="border-bottom border-gray pb-2 mb-0">Pesquisar</h6>
+            <br/>
+
+            <p>Selecione o método de pesquisa</p>
+
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" id="btnPeriodo">Período</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="btnMalha">Malha</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="btnGrafico">Gráficos</a>
+                </li>
+            </ul>
+
+            <div class="media text-muted pt-5">
+
+                <!-- PESQUISA POR PERIODO -->
+                <form class="form-signin" id="periodo">
+
+                    <div class="form-inline row">
+                        <div class="col-md-6">
+                            <label for="data-inicial">Data Inicial </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="data-inicial" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="data-final">Data Final</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="data-final" />
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+
+                    <!-- CAMPOS DE PESQUISA POR INCIDENTE E NÍVEL
+                    <div class="form-group">
+                        <label for="incidente">Incidente</label>
+                        <input type="text" class="form-control" id="incidente" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nivel">Nível</label>
+                        <select class="form-control" id="nivel">
+                        	<option value="10">Selecionar o Nível</option>
+                            <option value="0">Info</option>
+                            <option value="1">Warning</option>
+                            <option value="2">Error</option>
+                        </select>
+                    </div> 
+              		-->
+					 <div class="d-flex justify-content-around">					 	
+                    	<button class="btn btn-primary" type="submit" id="pesquisa-log-periodo">Pesquisar Log</button>	                    	                    
+                    	<button class="btn btn-primary" type="submit" id="extrair-log-periodo">Extrair Relatório</button>                    	
+                    </div>
+                </form>
+
+                <!-- PESQUISA POR MALHA -->
+                <form class="form-signin" id="malha">
+                    <div class="form-group">
+                        <label for="data">Data</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="data" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="incidente">Incidente</label>
+                            <input type="text" class="form-control" id="incidente" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="nivel">Nível</label>
+                            <select class="form-control" id="nivel">
+                                <option value="10" selected>Selecione uma opção</option>
+                                <option value="0">Info</option>
+                                <option value="1">Warning</option>
+                                <option value="2">Error</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <br/>
+                    <button class="btn btn-primary" type="submit" id="pesquisa-log-malha">Pesquisar Log</button>
+                </form>
+                <!-- Busca para graficos-->
+                <form class="form-signin" id="grafico">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="data-inicial-graph">Data Inicial </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="data-inicial-graph" name="data-inicial-graph" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="data-final-graph">Data Final</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="data-final-graph" name="data-final-graph" />
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="job">Job</label>
+                            <input type="text" class="form-control" id="job" name="job" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="nivel">Nível</label>
+                            <select class="form-control" id="nivel" name="nivel">
+                                <option value="3" selected>Todos</option>
+                                <option value="0">Info</option>
+                                <option value="1">Warning</option>
+                                <option value="2">Error</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="agrupamento">Agrupamento</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 input-group">
+                            <input class="form-control" id="agrupamento" name="agrupamento" type="radio" value="diario" checked="checked">Diario</input>
+                            <input class="form-control" id="agrupamento" name="agrupamento" type="radio" value="mensal">Mensal</input>
+                        </div>
+                    </div>
+                    <br/>
+                    <button class="btn btn-primary" type="submit" id="gerar-relatorio">Gerar Grafico</button>
+                </form>
+            </div>
+            <!-- Div para demonstração dos graficos-->
+            <div class="media text-muted pt-5" id="div-grafico">
+                <div id="chart_div"></div>
+            </div>
+            <div class="container" id="div-tabela">
+                <!-- TABELA PARA EXIBIÇÃO DOS DADOS RETORNADOS DA PESQUISA -->
+                <div id="tabela-pesquisa"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="static/js/jquery-3.3.1.js"></script>
+    <script src="static/js/popper.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/holder.min.js"></script>
+    <script src="static/js/offcanvas.js"></script>
+    <script src="static/js/jquery-ui.js"></script>
+    <script src="static/js/pesquisar.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', { 'packages': ['corechart'] });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+Bom dia,
+
+Seguem as ocorrências registradas do dia {{ dataInicio }} ao {{ dataFim }}: 
+Data    Nível   Area    Incidente   Job Detalhes</th>
+{% for reg in logs %}
+{ reg.getDataHoraCriacaoFormatado() }}  {{ reg.getNivel() }}    {{ reg.getUsuario().getArea() }}    {{ reg.getIncidente() }}    {{ reg.getTipo() }}    {{ reg.getJob() }}     {{ reg.getDescricao() }}
+{% endfor %}
+
+
+--Essa mensagem foi gerada automaticamente. por favor não responder.

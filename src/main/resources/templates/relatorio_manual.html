@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+ 	<!-- Bootstrap core CSS -->    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+	
+	<style type="text/css">.nav-underline .active{font-weight: 500;color: #343a40;}.nav-underline .nav-link{padding-top: .75rem;padding-bottom: .75rem;font-size: .875rem;color: #6c757d;}.nav-underline .nav-link:hover { color: #007bff;}.border-bottom { border-bottom: 1px solid #e5e5e5;}.alert-box{padding: 15px; margin-bottom: 20px;border: 1px solid transparent;border-radius: 4px;}.success{ color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6;display: none;}.failure{color: #a94442;background-color: #f2dede; border-color: #ebccd1;display: none;}main{padding-left: 30px;padding-right: 30px}div{padding-bottom:4px;}</style>       
+
+    <title>Cadeia Batch - Enviar Relatório Manualmente</title>
+</head>
+
+<body class="bg-light">
+
+    <div class="navbar navbar-light bg-light bg-gradient border-bottom box-shadow">
+        <nav class="nav nav-underline">
+            <a class="nav-link" href="/home">Página Inicial</a>
+            <a class="nav-link" href="/incluir">Incluir</a>
+            <!-- a class="nav-link" href="/pesquisar">Pesquisar</a-->
+            <a class="nav-link active" href="/relatoriomanual">Relatório Manual</a>
+            <a class="nav-link" href="/logout">Logout</a>
+        </nav>
+    </div>
+
+    <main role="main" class="container">
+        <div class="d-flex align-items-center p-3 my-3 text-50 bg-purple rounded box-shadow bg-white">
+            <img class="mr-3" src="data:image/png;base64,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" alt="ibm" width="100" height="80">
+            <div class="lh-100">
+                <h6 class="mb-0 text-black lh-100">IBM Brasil</h6>
+            </div>
+        </div>
+
+        <div class="my-3 p-3 bg-white rounded box-shadow">
+            <h6 class="border-bottom border-gray pb-2 mb-0">Relatório</h6>
+            <br/>
+            <form class="form-signin" id="send-form" method="POST" action="/relatoriomanual">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="data">Data</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="data" name="data" required/>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="to">Lista de envio(dividido por ";")</label>
+                        <input type="text" class="form-control" id="to" name="to" required/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="cc">Lista de cópia(dividido por ";")</label>
+                        <input type="text" class="form-control" id="cc" name="cc" required/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-1">
+                        <label for="mensal">Mensal:</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="checkbox" class="form-check-input" id="mensal" name="mensal" />
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="">
+                        <p>
+                            <div class="alert-box success">Enviado com sucesso!</div>
+                            <div class="alert-box failure"></div>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary" type="submit" id="enviar-relatorio">Enviar Relatório</button>
+                    </div>
+                </div>
+        </div>
+        </form>
+        </div>
+        </div>
+    </main>
+	 <!-- JavaScript Bundle with Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+---
+applications:
+- instances: 1
+  timeout: 180
+  name: javaspringcadeiabatch
+  buildpack: java_buildpack
+  path: ./target/javaspringapp-1.0-SNAPSHOT.jar
+  disk_quota: 1G
+  memory: 512MB
+  domain: mybluemix.net
+  host: java-spring-cadeiabatch
+  env:
+    JAVA_OPTS: '-XX:ReservedCodeCacheSize=32M -XX:MaxDirectMemorySize=32M'
+    JBP_CONFIG_OPEN_JDK_JRE: '[memory_calculator: {stack_threads: 30}]'
