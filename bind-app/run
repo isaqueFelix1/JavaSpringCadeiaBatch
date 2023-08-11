@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Env Vars:
+# REGISTRY: name of the image registry/namespace to get the images
+# REGION: the IBM Cloud Region in which we're running
+
+# Clean up previous run
+function clean() {
+  set +ex
+  echo Cleaning...
+  (
+  ibmcloud ce app delete -n ba-app -f
+  ibmcloud resource service-instance-delete ba-es -f --recursive
+  ibmcloud secret delete -n secret-ibm-cloud-operator -f
+  ibmcloud configmap delete -n config-ibm-cloud-operator -f
+  rm -f out
+  ) > /dev/null 2>&1
+}
+
+clean
+
+[[ "$1" == "clean" ]] && exit 0
+
+set -ex
+export REGISTRY=${REGISTRY:-icr.io/codeengine}
+export REGION=$(ibmcloud target | awk '/Region:/{ print $2 }') # Grab region
+
+# Create an instance of Event Streams
+ibmcloud resource service-instance-create ba-es messagehub lite $REGION
+
+# Wait for the service instance to be ready
+set +x
+echo "Waiting for Event Streams to become available..."
+while ! ibmcloud resource service-instance ba-es | grep "State.*active" ; do
+  sleep 1
+done > /dev/null
+echo
+set -x
+
+# Create the app
+ibmcloud ce app create -n ba-app --image ${REGISTRY}/bind-app
+
+# Get the URL of the app for later use
+URL=$(ibmcloud ce app get -n ba-app -o url)
+
+# Bind the service credentials to the app
+ibmcloud ce app bind --name ba-app --service-instance ba-es
+
+# Curl the app to make sure it had the creds
+curl -fs ${URL} | tee out
+[[ "${PIPESTATUS[0]}" == "0" ]]
+
+if ! grep CE_SERVICES out > /dev/null ; then
+  echo "Missing CE_SERVICES in App's env vars"
+  exit 1
+fi
+
+# Clean up
+clean

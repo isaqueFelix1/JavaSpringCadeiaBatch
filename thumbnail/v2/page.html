@@ -1,0 +1,382 @@
+<html>
+  <title>Thumbnail Generator</title>
+  <style/css>
+    body {
+      background-color: beige ;
+      padding: 0px ;
+      margin: 20px ;
+    }
+    #form {
+      margin-bottom: 10px ;
+    }
+    .button {
+      display: inline-block ;
+      padding: 10px ;
+      background: #ccc ;
+      cursor: pointer ;
+      border-radius: 5px ;
+      border: 1px solid #ccc ;
+    }
+    .button:hover {
+      backgrond: #ddd ;
+    }
+    #fileInput {
+      display: none ;
+    }
+    .pict {
+      display: block ;
+      margin-bottom: 5px ;
+    }
+    #container {
+      display: flex ;
+      flex-direction: row ;
+      flex-wrap: nowrap ;
+      align-items: stretch ;
+      justify-content: center ;
+    }
+    #samples {
+      display: flex ;
+      flex-direction: column ;
+      flex-wrap: nowrap ;
+      justify-content: flex-start ;
+    }
+    #drop {
+      display: flex ;
+      flex-direction: column ;
+      flex-wrap: nowrap ;
+      // align-items: center ;
+      // align-content: flex-end ;
+      justify-content: flex-start ;
+      font-family: sans-serif ;
+      font-weight: bold ;
+      margin-left: 20px ;
+    }
+    #picturePreview {
+      border: 3px dashed #ccc ;
+      border-radius: 20px ;
+      min-width: 400px ;
+      min-height: 40px ;
+      max-width: 400px ;
+      max-height: 800px ;
+      // padding: 20px ;
+      margin-top: 10px ;
+      margin-bottom: 10px ;
+      // text-align: center;
+      // line-height: 8;
+      // font-size: 12;
+      // color: #939393 ;
+      // font-family: courier ;
+      background-color: whitesmoke ;
+    }
+    #picker {
+      font-size: 16 ;
+      border-radius: 10px ;
+      padding-left: 20px ;
+      padding-right: 20px ;
+    }
+    button:hover {
+      background-color: #ddd ;
+    }
+    button:disabled {
+      background-color: #ccc ;
+      color: gray ;
+    }
+    #picturePreview.highlight {
+      border-color: purple ;
+    }
+    #action {
+      display: flex ;
+      flex-direction: column ;
+      flex-wrap: nowrap ;
+      align-items: center ;
+      justify-content: flex-start ;
+      margin-left: 20px ;
+      margin-top: 83px ;
+    }
+    #upload {
+      font-size: 16 ;
+      width: 110px ;
+      border-radius: 10px ;
+    }
+    #generate {
+      font-size: 16 ;
+      width: 110px ;
+      border-radius: 10px ;
+      margin-top: 10px ;
+      display: %s ;    / Toggled by env var
+    }
+    #empty {
+      font-size: 16 ;
+      width: 110px ;
+      border-radius: 10px ;
+      margin-top: 50px ;
+    }
+    #progress {
+      display: block ;
+      margin-top: 10px ;
+      max-width: 110px ;
+    }
+    #output {
+      display: flex ;
+      flex-direction: column ;
+      flex-wrap: nowrap ;
+      justify-content: flex-start ;
+      margin-left: 20px ;
+      // margin-top: 33px ;
+      min-width: 280px ;
+      font-family: sans-serif ;
+      font-weight: bold ;
+      text-align: center ;
+    }
+    #pictures {
+      border: 3px solid #ccc ;
+      border-radius: 20px ;
+      min-width: 200px ;
+      min-height: 40px ;
+      margin-top: 10px ;
+      margin-bottom: 10px ;
+      background-color: whitesmoke ;
+      padding: 5px ;
+    }
+
+    .row {
+      display: flex ;
+      flex-direction: row ;
+      align-items: center ;
+      margin-bottom: 5px ;
+    }
+
+    .original {
+      max-width: 200px ;
+      margin-right:10px ;
+      border-radius: 20px ;
+    }
+
+    .thumbnail {
+      border: 1px dashed #ddd ;
+      border-radius: 20px ;
+      margin-top: 10px ;
+      margin-bottom: 10px ;
+      background-color: whitesmoke ;
+    }
+
+    .emptythumbnail {
+      border: 2px dashed #ccc ;
+      border-radius: 20px ;
+      margin-top: 10px ;
+      margin-bottom: 10px ;
+      background-color: whitesmoke ;
+      width: 50px ;
+      height: 50px ;
+      text-align: center ;
+      line-height: 3 ;
+    }
+  </style/css>
+  <body>
+    <center><h1>Thumbnail Generator<h1></center>
+    <div id=container>
+      <div id=samples>
+        <image class=pict width=50 src="./pictures/dog1.jpg">
+        <image class=pict width=50 src="./pictures/dog2.jpg">
+        <image class=pict width=50 src="./pictures/dog3.jpg">
+        <image class=pict width=50 src="./pictures/dog4.jpg">
+        <image class=pict width=50 src="./pictures/dog5.jpg">
+        <image class=pict width=50 src="./pictures/dog6.jpg">
+        <image class=pict width=50 src="./pictures/dog7.jpg">
+        <image class=pict width=50 src="./pictures/dog8.jpg">
+      </div>
+      <div id="drop">
+        <form id="form">
+          Drag a picture from the left to the box:<br>
+          <input type="file" id="fileInput" accept="image/*" onchange="previewPicture(this.files[0])">
+          <image id="picturePreview"><br>
+          or:
+          <button type=button id=picker onclick="fileInput.click()">
+            Choose a picture...
+          </button>
+		  <font size=-1>(jpg, gif, png)</font>
+        </form>
+      </div>
+      <div id="action">
+      <button id=upload onclick="uploadPicture()">Upload Picture</button>
+      <button id=generate onclick="calcThumbnails()">Thumbnails Job Runner</button>
+      <button id=empty onclick="emptyBucket()">Clear Bucket</button>
+      <span id=progress></span>
+      </div>
+      <div id="output">
+	    Pictures / Thumbnails
+        <div id="pictures"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    upload.disabled = true ;
+    var drop = document.getElementById('picturePreview');
+
+    function uploadPicture() {
+      progress.innerText = "Uploading...";
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      var img = document.getElementById("picturePreview");
+      canvas.height = img.naturalHeight;
+      canvas.width = img.naturalWidth;
+      context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight);
+      try {
+        var data = canvas.toBlob(function(blob){
+          var url = "./upload" ;
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", url, true);
+
+          xhr.addEventListener('readystatechange', function(e) {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+              progress.innerHTML = "";
+            } else if (xhr.readyState == 4) {
+              progress.innerHTML = xhr.responseText ;
+            }
+          });
+          xhr.send(blob);
+        });
+      } catch(exp) {
+        progress.innerText = exp ;
+      }
+    }
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function highlight(e) {
+      drop.classList.add('highlight');
+    }
+
+    function unhighlight(e) {
+      drop.classList.remove('highlight');
+    }
+
+    function doDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var items = e.dataTransfer.items ;
+      var item = items[0];
+
+      var url = e.dataTransfer.getData('URL');
+      if (url == "") url = e.dataTransfer.getData('Text');
+      if (url != "" ){
+        document.getElementById('picturePreview').src = url ;
+        upload.disabled = false ;
+        progress.innerText = "" ;
+      } else {
+        previewPicture(e.dataTransfer.files[0]);
+      }
+    }
+
+    function previewPicture(file) {
+      if (file != null) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function() {
+          document.getElementById('picturePreview').src = reader.result ;
+        }
+        upload.disabled = false ;
+        progress.innerText = "" ;
+      }
+    }
+
+    function calcThumbnails() {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", "./calcthumbnails", true);
+      xmlHttp.send(null);
+    }
+
+    function emptyBucket() {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", "./emptybucket", true);
+      xmlHttp.send(null);
+    }
+
+    function updateBucket() {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          var result = JSON.parse(xmlHttp.response);
+          var current = pictures.childNodes.length-1 ;
+          for ( var i = 0 ; result[i] != null ; i++ ) {
+            if ( current == -1 ) {
+              var row = document.createElement("div");
+              row.className = "row"
+
+              var img = document.createElement("img");
+              img.className = "original" ;
+              img.src = result[i].Picture ;
+              row.appendChild(img);
+
+              if ( result[i].Thumb == "" ) {
+                var div = document.createElement("div");
+                div.className = "emptythumbnail" ;
+                div.innerText = "N/A" ;
+                row.appendChild(div);
+              } else {
+                var tmb = document.createElement("img");
+                tmb.className = "thumbnail" ;
+                tmb.src = result[i].Thumb ;
+                row.appendChild(tmb);
+              }
+
+              pictures.insertBefore( row, pictures.firstChild );
+            } else {
+              var row = pictures.childNodes[current];
+              var img = row.childNodes[0];
+              if (!img.src.endsWith(result[i].Picture)) {
+                img.src = result[i].Picture ;
+              }
+
+              var tmb = row.childNodes[1];
+              if (result[i].Thumb == "") {
+                if (tmb.className != "emptythumbnail") {
+                  var div = document.createElement("div");
+                  div.className = "emptythumbnail" ;
+                  div.innerText = "N/A" ;
+                  row.replaceChild(div, tmb);
+                }
+              } else {
+                if (tmb.className != "thumbnail") {
+                  var img = document.createElement("img");
+                  img.className = "thumbnail" ;
+                  img.src = result[i].Thumb ;
+                  row.replaceChild(img, tmb)
+                } else {
+                  if (!tmb.src.endsWith(result[i].Thumb)) {
+                    tmb.src = result[i].Thumb ;
+                  }
+                }
+              }
+              current-- ;
+            }
+          }
+          while (current != -1) {
+            pictures.removeChild(pictures.firstChild);
+            current-- ;
+          }
+        }
+      }
+      xmlHttp.open("GET", "./bucket", true);
+      xmlHttp.send(null);
+    }
+
+    updateBucket();
+    setInterval(updateBucket, 500);
+
+    drop.addEventListener('dragenter', preventDefaults, false);
+    drop.addEventListener('dragover', preventDefaults, false);
+    drop.addEventListener('dragleave', preventDefaults, false);
+
+    drop.addEventListener('dragenter', highlight, false)
+    drop.addEventListener('dragover', highlight, false)
+
+    drop.addEventListener('dragleave', unhighlight, false)
+    drop.addEventListener('drop', unhighlight, false)
+
+    drop.addEventListener('drop', doDrop, false)
+  </script>
+</html>

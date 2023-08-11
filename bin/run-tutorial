@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Download the "demoscript" utility if not present locally
+if [[ -e .demoscript ]]; then
+  . .demoscript
+else
+  curl -fs https://raw.githubusercontent.com/duglin/tools/master/demoscript/demoscript > /tmp/demoscript-curl
+  . /tmp/demoscript-curl
+  rm -f /tmp/demoscript-curl
+fi
+
+export RETRYONFAIL=true
+
+set +e -o pipefail
+[[ "$1" == "clean" ]] && CLEAN="true"
+[[ "$DRYRUN" != "" ]] && EVAL="echo" || EVAL="eval"
+[[ "$DRYRUN" != "" ]] && DOIT="echo" || DOIT="doit"
+
+if [[ -n $CLEAN ]]; then
+  skip=1
+  delay=0
+fi
+
+while read -u 3 line ; do
+  line="$prev$line"
+  [[ "$line" == *"\\" ]] && prev="${line: -2}" && continue # join w/next line
+  prev=""
+
+  # Skip all non-user-commands and comment-commands
+  [[ "$line" != "\$"* && "$line" != "<!-- "* ]] && continue
+
+  # Override the "icr.io/codeengine" if a REGISTRY was specified
+  [[ -n $REGISTRY ]] && line=${line/icr.io\/codeengine/$REGISTRY}
+
+  if [[ "$line" == "<!-- "* ]]; then
+    # Comment command
+    line=${line:5}
+    line=${line% -->}
+
+	# Stop on start of "clean" commands if we're running a demo
+	[[ "$line" == "clean" && -z "$skip" ]] && exit 0
+    # Marks the start of our "clean" commands, so turn off "stop on error"
+    [[ "$line" == "clean" ]] && ignorerc="--ignorerc" && set +e && continue
+
+    if [[ -z "$CLEAN" || -n "$ignorerc" ]]; then
+	  [[ -n "$ignorerc" ]] && set +e
+      $EVAL $line
+	  [[ $? != "0" && -z "$ignorerc" ]] && echo "Fail: $line" && exit 1
+    fi
+  else
+    # User command
+    if [[ -z "$CLEAN" || -n "$ignorerc" ]]; then
+      line=${line:2}   # remove $
+	  $DOIT $ignorerc $line
+	  rc=$?
+	  set +e
+	  [[ -z "$ignorerc" && $rc != "0" ]] && echo "Unexpected rc: $rc" && exit 2
+      [[ "$line" == "exit"* ]] && exit 0
+    fi
+  fi
+done  3< ${FILE:-README.md}
+exit 0

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# This will run (w/o building) all demos
+
+cd $(dirname $0)/..
+
+set -e
+for file in */run | sort` ; do (
+  echo -e "\n### `dirname $file`\n"
+  cd `dirname $file`
+
+  # Skip this dir
+  [[ -e ./.SKIP ]] && echo "SKIPPING $file " && continue
+
+  # Run the sample with whatever REGISTRY we're pointing to
+  timeout 2m ./run "$@"
+  rc=$?
+  if [[ "$rc" != "0" ]]; then
+    echo exit: $rc
+    exit $rc
+  fi
+
+) done
+
+echo "All done!"

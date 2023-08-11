@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Env Vars:
+# REGISTRY: name of the image registry/namespace to get the images
+
+# Clean up previous run
+function clean() {
+  set +ex
+  echo Cleaning...
+  (
+  ibmcloud ce app delete -n session-redis -f
+  ibmcloud ce app delete -n session-app -f
+  rm -f out
+  ) > /dev/null 2>&1
+}
+
+clean
+[[ "$1" == "clean" ]] && exit 0
+
+set -ex
+export REGISTRY=${REGISTRY:-icr.io/codeengine}
+
+# Deploy redis as an app. Make sure we only ever have 1 instance running
+ibmcloud ce app create -n session-redis --image redis --user 999 --cl --min=1 --max=1 \
+  --port 6379
+
+# Get the session-redis pod's IP address so we can hit it directly.
+# We can't talk to the normal infrastructure/gateway/load-balancer since
+# those will only handle HTTP requests and talking to Redis isn't HTTP
+# It is important to note that in a real-world scenario the IP of this pod
+# could change over time (if the pod is restarted). Which means, technically
+# we should be looking for it to change over time and then update the IP value
+# used by the app. But to keep it simple we'll avoid that problem. Perhaps
+# a more complex sample will show how to dynamically update the IP info.
+IP=$(ibmcloud ce app get -n session-redis -o jsonpath='{.instances[].status.podIP}')
+
+# Create the stateful app and pass it the session-redis IP
+ibmcloud ce app create -n session-app -i ${REGISTRY}/sessions -e IP=$IP --cn=5 --min=3
+
+# Get the URL of the app for later use
+URL=$(ibmcloud ce app get -n session-app -o url)
+
+# Now call the app to make sure it works
+curl -fsw "%{http_code}\n" $URL
+
+# Now call it 98 more times in parallel. Notice the hostname changes
+set +x
+for i in `seq 1 98` ; do
+  curl -fs $URL &
+done
+wait
+set -x
+
+# Verify the app was hit 100 times total
+curl -fsw "%{http_code}\n" -o out $URL
+if ! grep "Counter: 100" out > /dev/null ; then
+  echo "Unexpected output - should have seen 'Counter: 100'"
+  tail out
+  exit 1
+fi
+
+# Clean up
+clean
