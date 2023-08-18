@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -79,8 +81,9 @@ public class MailUtils {
 	
 	private final String CC_MAIL_INTER_CONF_NAME = "INTERNAL_MAIL_CC";
 	private final String TO_INTER_CONF_NAME = "REPORT_MAIL_TO_INTER";
-	
-	private final String SENDGRID_API_KEY = "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";
+
+	@Value("${mail.token}")
+	private String SENDGRID_API_KEY
 
 	private Logger logger = LogManager.getLogger(MailUtils.class);
 	
