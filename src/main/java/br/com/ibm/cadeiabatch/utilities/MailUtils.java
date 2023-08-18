@@ -83,7 +83,7 @@ public class MailUtils {
 	private final String TO_INTER_CONF_NAME = "REPORT_MAIL_TO_INTER";
 
 	@Value("${mail.token}")
-	private String SENDGRID_API_KEY
+	private String SENDGRID_API_KEY;
 
 	private Logger logger = LogManager.getLogger(MailUtils.class);
 	
