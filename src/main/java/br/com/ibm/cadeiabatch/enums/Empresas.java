@@ -1,7 +1,7 @@
 package br.com.ibm.cadeiabatch.enums;
 
 public enum Empresas {
-    PORTOSEGURO(0), CMIG(1);
+    PORTOSEGURO(0), CMIG(1), ACELEN(2);
 
     public int valor;
 
@@ -15,6 +15,8 @@ public enum Empresas {
                 return "PORTOSEGURO";
             case 1:
                 return "CMIG";
+            case 2:
+                return "ACELEN";
         }
         return "";
     }
