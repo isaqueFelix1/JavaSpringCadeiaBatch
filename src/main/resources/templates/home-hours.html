@@ -153,7 +153,7 @@
 								<div class='form-group mx-sm-1 mb-1'>
 									<input id='newItemDesc' name="descricao" type='text' placeholder='Breve descrição' class='form-control' required>
 								</div>
-								<div class='form-group mx-sm-1 mb-1'>
+								<div class='form-group mx-sm-1 mb-1' th:if="${empresa}!=2">
 									<select class='form-control' id='newItemTipo' name='newItemTipo'>
 										<option value='0'>Solicitação</option>
 										<option value='1'>Incidente</option>
@@ -167,6 +167,13 @@
 										<option value='9'>Projetos</option>
 									</select>
 								</div>
+								<div class='form-group mx-sm-1 mb-1' th:if="${empresa}==2">
+									<select class='form-control' id='newItemTipo2' name='newItemTipo2'>
+										<option value='10'>Demanda</option>
+										<option value='11'>Projeto</option>								
+									</select>
+								</div>
+
 								<div class='form-group mx-sm-1 mb-1' th:if="${empresa}==0">
 									<select class="form-control" id="categoria1" name="categoria1">
 										<option value='0'>SAP_BW</option>
@@ -216,6 +223,12 @@
 										<option value='40'>DEV_Canais_Digitais_Totem</option>
 										<option value='41'>DEV_Cognitivo_Ura</option>
 										<option value='42'>DEV_Cognitivo_Infra</option>
+									</select>
+								</div>
+								<div class='form-group mx-sm-1 mb-1' th:if="${empresa}==2">
+									<select class="form-control" id="categoria3" name="categoria3">
+										<option value='43'>SAP_MM</option>
+										<option value='44'>SAP_FIORI</option>
 									</select>
 								</div>
 								<div class="modal-footer">

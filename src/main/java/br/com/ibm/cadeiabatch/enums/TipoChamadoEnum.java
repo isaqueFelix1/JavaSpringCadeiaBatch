@@ -12,4 +12,6 @@ public enum TipoChamadoEnum {
 	,CheckList
 	,Treinamento
 	,Projetos
+	,Demanda
+	,Projeto
 }

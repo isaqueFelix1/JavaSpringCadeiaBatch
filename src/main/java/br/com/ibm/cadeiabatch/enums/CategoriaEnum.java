@@ -45,4 +45,6 @@ public enum CategoriaEnum {
 	,DEV_Canais_Digitais_Totem
 	,DEV_Cognitivo_Ura
 	,DEV_Cognitivo_Infra
+	,SAP_MM
+	,SAP_FIORI
 }
