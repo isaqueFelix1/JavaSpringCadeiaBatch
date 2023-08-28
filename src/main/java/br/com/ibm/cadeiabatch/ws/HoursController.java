@@ -46,13 +46,16 @@ public class HoursController {
 		Chamado chamado = new Chamado();
 		chamado.setNumero(Long.parseLong(request.getParameter("chamado").toString().replaceAll(" ", "")));
 		chamado.setDescricao(request.getParameter("descricao").toString());		
+		CategoriaEnum categoriaEnum = null;
+		TipoChamadoEnum tipoEnum = null;
+
 		if(usuarioLogado.getEmpresaLogada()!=2)		
-			TipoChamadoEnum tipoEnum = TipoChamadoEnum.values()[Integer.parseInt(request.getParameter("newItemTipo").toString())];
+			tipoEnum = TipoChamadoEnum.values()[Integer.parseInt(request.getParameter("newItemTipo").toString())];
 
 		if(usuarioLogado.getEmpresaLogada()==2)		
-			TipoChamadoEnum tipoEnum = TipoChamadoEnum.values()[Integer.parseInt(request.getParameter("newItemTipo2").toString())];
+			tipoEnum = TipoChamadoEnum.values()[Integer.parseInt(request.getParameter("newItemTipo2").toString())];
 
-		CategoriaEnum categoriaEnum = null;
+		
 		if(usuarioLogado.getEmpresaLogada()==0)
 			categoriaEnum = CategoriaEnum.values()[Integer.parseInt(request.getParameter("categoria1").toString())];
 
