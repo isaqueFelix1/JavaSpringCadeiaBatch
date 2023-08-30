@@ -47,7 +47,4 @@ public enum CategoriaEnum {
 	,DEV_Cognitivo_Infra
 	,SAP_MM
 	,SAP_FIORI
-	,SAP_FI
-	,SAP_CO
-	,SAP_SD
 }
