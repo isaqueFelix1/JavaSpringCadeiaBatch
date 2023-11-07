@@ -14,4 +14,5 @@ public enum TipoChamadoEnum {
 	,Projetos
 	,Demanda
 	,Projeto
+	,Escopo
 }
